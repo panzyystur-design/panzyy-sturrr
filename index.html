@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PANZYY STURR</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top, #54149b 0%, #18002d 35%, #050008 75%);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* BACKGROUND EFFECT */
+    body::before {
+      content: "";
+      position: fixed;
+      width: 350px;
+      height: 350px;
+      background: #9d00ff;
+      filter: blur(150px);
+      opacity: .25;
+      top: -100px;
+      left: -100px;
+      z-index: -1;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: #5e00ff;
+      filter: blur(150px);
+      opacity: .2;
+      bottom: -100px;
+      right: -100px;
+      z-index: -1;
+    }
+
+    /* LOADING */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #050008;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: .8s;
+    }
+
+    .loader-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: #c66bff;
+      text-shadow: 0 0 20px #a000ff;
+      margin-bottom: 25px;
+    }
+
+    .loading-box {
+      width: 260px;
+      height: 10px;
+      background: #21102e;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 15px #8b00ff;
+    }
+
+    .loading-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #7000ff, #e100ff);
+      box-shadow: 0 0 15px #c000ff;
+      transition: width .1s;
+    }
+
+    #percent {
+      margin-top: 12px;
+      color: #dca8ff;
+      font-weight: bold;
+    }
+
+    /* HEADER */
+    header {
+      width: 100%;
+      padding: 22px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,0,8,.75);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(187,0,255,.2);
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 900;
+      color: #d278ff;
+      text-shadow: 0 0 15px #9d00ff;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+      transition: .3s;
+    }
+
+    nav a:hover {
+      color: #d05cff;
+      text-shadow: 0 0 10px #b000ff;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      padding: 100px 8% 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      animation: fadeUp 1s ease;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid #b300ff;
+      border-radius: 50px;
+      color: #d58aff;
+      background: rgba(130,0,255,.12);
+      box-shadow: 0 0 20px rgba(160,0,255,.25);
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    h1 {
+      font-size: clamp(45px, 10vw, 90px);
+      font-weight: 1000;
+      letter-spacing: -4px;
+      line-height: .95;
+      background: linear-gradient(90deg, #fff, #cf68ff, #8d00ff);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(180,0,255,.2);
+    }
+
+    .hero p {
+      color: #cdbbd7;
+      margin: 25px auto;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: .3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7b00ff, #d000ff);
+      box-shadow: 0 0 25px rgba(168,0,255,.45);
+    }
+
+    .btn-secondary {
+      border: 1px solid #8e27b9;
+      background: rgba(255,255,255,.04);
+    }
+
+    .btn:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    /* SECTION */
+    section {
+      padding: 80px 8%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .section-title h2 {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #aa9aae;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      position: relative;
+      padding: 25px;
+      background: linear-gradient(
+        145deg,
+        rgba(119,0,180,.2),
+        rgba(255,255,255,.025)
+      );
+      border: 1px solid rgba(190,0,255,.25);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: .35s;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: #b000ff;
+      filter: blur(70px);
+      opacity: .15;
+      right: -30px;
+      top: -30px;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: #b900ff;
+      box-shadow: 0 15px 45px rgba(130,0,255,.25);
+    }
+
+    .card h3 {
+      color: #e0a2ff;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .price {
+      font-size: 30px;
+      font-weight: 900;
+      margin-bottom: 15px;
+    }
+
+    .card ul {
+      list-style: none;
+      color: #c0b1c7;
+      line-height: 2;
+      font-size: 14px;
+    }
+
+    .card li::before {
+      content: "✓ ";
+      color: #c800ff;
+      font-weight: bold;
+    }
+
+    .order {
+      margin-top: 20px;
+      display: block;
+      text-align: center;
+      padding: 11px;
+      background: #7200a8;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .3s;
+    }
+
+    .order:hover {
+      background: #a900e8;
+      box-shadow: 0 0 20px #a900e8;
+    }
+
+    /* BENEFIT */
+    .benefit-box {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(190,0,255,.25);
+    }
+
+    .benefit-box p {
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      color: #d1c5d7;
+    }
+
+    .benefit-box p:last-child {
+      border-bottom: none;
+    }
+
+    /* CONTACT */
+    .contact {
+      text-align: center;
+    }
+
+    .contact-box {
+      max-width: 600px;
+      margin: auto;
+      padding: 40px 25px;
+      border-radius: 25px;
+      background: linear-gradient(
+        145deg,
+        rgba(123,0,255,.18),
+        rgba(255,255,255,.03)
+      );
+      border: 1px solid rgba(210,0,255,.25);
+    }
+
+    .phone {
+      font-size: 25px;
+      font-weight: bold;
+      color: #dc8cff;
+      margin: 20px 0;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: #817589;
+      font-size: 13px;
+    }
+
+    /* ANIMATION */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: .8s;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      header {
+        padding: 18px 5%;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 80px 5% 50px;
+      }
+
+      section {
+        padding: 60px 5%;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader">
+    <div class="loader-title">PANZYY STURR</div>
+
+    <div class="loading-box">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+
+    <div id="percent">0%</div>
+  </div>
+
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">PANZYY STURR</div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#benefit">Benefit</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+
+      <span class="badge">⚡ DIGITAL SERVICE STORE</span>
+
+      <h1>PANZYY STURR</h1>
+
+      <p>
+        Menyediakan berbagai layanan digital, APK, website,
+        dan kebutuhan lainnya dengan pelayanan cepat dan praktis.
+      </p>
+
+      <div class="buttons">
+        <a href="#layanan" class="btn btn-primary">
+          LIHAT LAYANAN
+        </a>
+
+        <a
+          href="https://wa.me/6289502400453"
+          class="btn btn-secondary"
+          target="_blank">
+          HUBUNGI KAMI
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- LAYANAN -->
+  <section id="layanan">
+
+    <div class="section-title reveal">
+      <h2>PANZYYSTUR MENYEDIAKAN</h2>
+      <p>Pilih layanan yang kamu butuhkan</p>
+    </div>
+
+    <div class="cards">
+
+      <div class="card reveal">
+        <h3>APK BUG CATALYPS ROLE</h3>
+        <div class="price">Mulai 3K</div>
+
+        <ul>
+          <li>FULL UP — 3K</li>
+          <li>RESELLER — 7K</li>
+          <li>PARTNER — 13K</li>
+          <li>TANGAN KANAN — 17K</li>
+          <li>OWNER — 25K</li>
+        </ul>
+
+        <a
+          class="order"
+          href="https://wa.me/6289502400453?text=Halo%20PANZYY%20STURR,%20saya%20ingin%20memesan%20APK%20BUG%20CATALYPS%20ROLE"
+          target="_blank">
+          PESAN & BAYAR
+        </a>
+      </div>
+
+
+      <div class="card reveal">
+        <h3>APK BADAK</h3>
+        <div class="price">1K</div>
+
+        <ul>
+          <li>APK BADAK</li>
+          <li>Proses cepat</li>
+          <li>Support pembelian</li>
+        </ul>
+
+        <a
+          class="order"
+          href="https://wa.me/6289502400453?text=Halo%20PANZYY%20STURR,%20saya%20ingin%20memesan%20APK%20BADAK"
+          target="_blank">
+          PESAN & BAYAR
+        </a>
+      </div>
+
+
+      <div class="card reveal">
+        <h3>WEB SPAM OTP V1</h3>
+        <div class="price">1K</div>
+
+        <ul>
+          <li>WEB SPAM OTP V1</li>
+          <li>Praktis digunakan</li>
+          <li>Support pembelian</li>
+        </ul>
+
+        <a
+          class="order"
+          href="https://wa.me/6289502400453?text=Halo%20PANZYY%20STURR,%20saya%20ingin%20memesan%20WEB%20SPAM%20OTP%20V1"
+          target="_blank">
+          PESAN & BAYAR
+        </a>
+      </div>
+
+
+      <div class="card reveal">
+        <h3>SUNTIK ALL SOSMED</h3>
+        <div class="price">Mulai 500P</div>
+
+        <ul>
+          <li>50P — 500 PERAK</li>
+          <li>100P — 1K</li>
+          <li>150P — 1,5K</li>
+          <li>200P — 2K</li>
+          <li>300P — 3K</li>
+          <li>400P — 4K</li>
+          <li>500P — 5K</li>
+        </ul>
+
+        <a
+          class="order"
+          href="https://wa.me/6289502400453?text=Halo%20PANZYY%20STURR,%20saya%20ingin%20memesan%20layanan%20SUNTIK%20ALL%20SOSMED"
+          target="_blank">
+          PESAN & BAYAR
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- BENEFIT -->
+  <section id="benefit">
+
+    <div class="section-title reveal">
+      <h2>BENEFIT</h2>
+      <p>Kenapa menggunakan PANZYY STURR?</p>
+    </div>
+
+    <div class="benefit-box reveal">
+
+      <p>⚡ Proses pelayanan cepat</p>
+      <p>🛡️ Pelayanan langsung melalui WhatsApp</p>
+      <p>💜 Tampilan website modern</p>
+      <p>📱 Support tampilan HP dan desktop</p>
+      <p>🔥 Banyak pilihan layanan digital</p>
+      <p>💬 Bisa konsultasi sebelum melakukan pembelian</p>
+
+    </div>
+
+  </section>
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+
+    <div class="section-title reveal">
+      <h2>CONTACT PANZYY STURR</h2>
+      <p>Silakan hubungi kami untuk melakukan pemesanan.</p>
+    </div>
+
+    <div class="contact-box reveal">
+
+      <h3>WhatsApp</h3>
+
+      <div class="phone">
+        089502400453
+      </div>
+
+      <a
+        href="https://wa.me/6289502400453"
+        target="_blank"
+        class="btn btn-primary">
+        CHAT WHATSAPP
+      </a>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 PANZYY STURR — All Rights Reserved.
+  </footer>
+
+
+  <script>
+
+    /* LOADING */
+    let progress = 0;
+
+    const loadingBar = document.getElementById("loadingBar");
+    const percent = document.getElementById("percent");
+    const loader = document.getElementById("loader");
+
+    const loading = setInterval(() => {
+
+      progress++;
+
+      loadingBar.style.width = progress + "%";
+      percent.textContent = progress + "%";
+
+      if (progress >= 100) {
+
+        clearInterval(loading);
+
+        setTimeout(() => {
+          loader.style.opacity = "0";
+          loader.style.pointerEvents = "none";
+
+          setTimeout(() => {
+            loader.style.display = "none";
+          }, 800);
+
+        }, 300);
+      }
+
+    }, 20);
+
+
+    /* SCROLL ANIMATION */
+    const revealElements =
+      document.querySelectorAll(".reveal");
+
+    function revealOnScroll() {
+
+      revealElements.forEach(element => {
+
+        const windowHeight =
+          window.innerHeight;
+
+        const elementTop =
+          element.getBoundingClientRect().top;
+
+        if (elementTop <
+            windowHeight - 80) {
+
+          element.classList.add("active");
+
+        }
+
+      });
+
+    }
+
+    window.addEventListener(
+      "scroll",
+      revealOnScroll
+    );
+
+    revealOnScroll();
+
+  </script>
+
+</body>
+  </html>
