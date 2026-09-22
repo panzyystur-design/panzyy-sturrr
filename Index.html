@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08030f">
+
+<title>PANZYYSTUR — Market Jasa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#05030a;
+  --bg2:#10051b;
+  --purple:#8b35d6;
+  --purple2:#c56cff;
+  --white:#fff;
+  --gray:#bdb4c8;
+  --line:rgba(190,100,255,.25);
+  --nav:76px;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Poppins,sans-serif;
+  color:white;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(140,45,220,.25),transparent 30%),
+    radial-gradient(circle at 90% 50%,rgba(120,30,220,.18),transparent 30%),
+    linear-gradient(180deg,#030207,#0d0616,#030207);
+  overflow-x:hidden;
+}
+
+body.lock{
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.13;
+  background-image:
+    linear-gradient(rgba(190,100,255,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(190,100,255,.08) 1px,transparent 1px);
+  background-size:50px 50px;
+  mask-image:linear-gradient(to bottom,#000,transparent);
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font-family:inherit;
+}
+
+/* =========================
+   LOADING SCREEN
+========================= */
+
+#loader{
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+
+  background:
+    radial-gradient(circle,#35105c 0%,#0b0413 45%,#020106 100%);
+
+  transition:.7s ease;
+}
+
+#loader.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.loaderBox{
+  width:min(90%,500px);
+  position:relative;
+}
+
+.hud{
+  position:absolute;
+  inset:-60px -20px;
+
+  border:1px solid rgba(210,130,255,.2);
+
+  clip-path:polygon(
+    0 12%,8% 12%,8% 0,
+    92% 0,92% 12%,100% 12%,
+    100% 88%,92% 88%,92% 100%,
+    8% 100%,8% 88%,0 88%
+  );
+
+  box-shadow:
+    0 0 40px rgba(160,50,255,.12) inset;
+}
+
+.profile{
+  width:175px;
+  height:175px;
+  margin:auto;
+  border-radius:50%;
+  object-fit:cover;
+
+  box-shadow:
+    0 0 15px #fff,
+    0 0 40px #a83cff,
+    0 0 80px rgba(180,60,255,.5);
+
+  animation:flicker 2.5s infinite;
+}
+
+.profileRing{
+  width:200px;
+  height:200px;
+  margin:auto;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.profileRing::before,
+.profileRing::after{
+  content:"";
+  position:absolute;
+  inset:-10px;
+  border-radius:50%;
+  border:2px solid transparent;
+
+  border-top-color:white;
+  border-right-color:var(--purple2);
+
+  animation:spin 2.4s linear infinite;
+
+  filter:drop-shadow(0 0 12px #b75cff);
+}
+
+.profileRing::after{
+  inset:-22px;
+  border-width:1px;
+  border-bottom-color:#fff;
+  border-left-color:#a63cff;
+
+  animation:
+    spin 4s linear infinite reverse;
+}
+
+.lightning{
+  position:absolute;
+  color:white;
+  font-size:24px;
+  text-shadow:0 0 15px #c45cff;
+  animation:blink 1s infinite;
+}
+
+.l1{top:0;left:0}
+.l2{right:-5px;bottom:15px}
+.l3{left:15px;bottom:-15px}
+
+.logoText{
+  margin-top:30px;
+  font-family:Orbitron;
+  font-weight:800;
+  font-size:clamp(30px,8vw,52px);
+  letter-spacing:4px;
+
+  text-shadow:
+    0 0 15px #a64aff,
+    0 0 35px #8128d0;
+}
+
+.logoText span{
+  color:#bd6aff;
+}
+
+.loadingText{
+  margin:12px 0;
+  font-size:11px;
+  letter-spacing:4px;
+  color:#c9bdd4;
+}
+
+.progressBox{
+  width:100%;
+  height:10px;
+  overflow:hidden;
+  border-radius:20px;
+  background:#0c0712;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.progress{
+  height:100%;
+  width:0%;
+  background:linear-gradient(
+    90deg,
+    #fff,
+    #c36aff,
+    #7424c7
+  );
+  box-shadow:0 0 20px #bf55ff;
+}
+
+.percent{
+  font-family:Orbitron;
+  font-size:13px;
+  margin:10px;
+}
+
+.enter{
+  display:none;
+
+  padding:15px 25px;
+  border:0;
+  border-radius:14px;
+
+  font-weight:800;
+  cursor:pointer;
+
+  color:#100515;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #dcaaff,
+      #9139df
+    );
+
+  box-shadow:
+    0 0 25px rgba(190,90,255,.5);
+
+  animation:pulse 1.5s infinite;
+}
+
+.enter.show{
+  display:inline-block;
+}
+
+/* =========================
+   INTRO
+========================= */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  background:#050208;
+}
+
+#intro.show{
+  display:flex;
+  animation:intro 1s forwards;
+}
+
+.introTitle{
+  text-align:center;
+  font-family:Orbitron;
+  font-weight:800;
+  font-size:clamp(30px,8vw,70px);
+  text-shadow:0 0 30px #b950ff;
+}
+
+.introTitle small{
+  display:block;
+  margin-bottom:15px;
+
+  font-family:Poppins;
+  font-size:12px;
+  letter-spacing:7px;
+  color:#c9b9d3;
+}
+
+.slash{
+  position:absolute;
+  width:130%;
+  height:4px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    white,
+    #a93eff,
+    transparent
+  );
+
+  box-shadow:0 0 30px #b449ff;
+
+  transform:rotate(-12deg);
+  animation:slash .8s;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+  padding-bottom:calc(var(--nav) + 20px);
+}
+
+.container{
+  width:min(1100px,92%);
+  margin:auto;
+}
+
+.hero{
+  min-height:80vh;
+  display:flex;
+  align-items:center;
+  padding:50px 0;
+}
+
+.heroCard{
+  width:100%;
+  min-height:550px;
+
+  display:flex;
+  align-items:flex-end;
+
+  position:relative;
+  overflow:hidden;
+
+  border-radius:28px;
+  border:1px solid var(--line);
+
+  background:#08050d;
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.65);
+}
+
+.heroCard::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent 20%,
+      rgba(0,0,0,.85)
+    ),
+    url("assets/panzyystur-banner.png")
+    center/cover no-repeat;
+
+  filter:saturate(1.1);
+}
+
+.heroCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4,2,8,.8),
+      transparent 70%
+    );
+}
+
+.heroContent{
+  position:relative;
+  z-index:2;
+  padding:clamp(25px,6vw,65px);
+  max-width:750px;
+}
+
+.eyebrow{
+  color:#d5bce4;
+  font-family:Orbitron;
+  font-size:11px;
+  letter-spacing:3px;
+}
+
+h1{
+  font-family:Orbitron;
+  font-size:clamp(35px,7vw,75px);
+  margin:12px 0;
+  line-height:1.05;
+}
+
+.gradient{
+  background:linear-gradient(
+    90deg,
+    white,
+    #d99bff,
+    #8f35d8
+  );
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  color:#d0c5d8;
+  line-height:1.8;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:25px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.btn{
+  min-height:48px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:12px 20px;
+
+  border-radius:14px;
+  border:1px solid rgba(195,105,255,.35);
+
+  color:white;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.07),
+      rgba(140,45,210,.25)
+    );
+
+  cursor:pointer;
+
+  font-weight:700;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.3),
+    0 0 20px rgba(160,50,255,.12);
+
+  transition:.25s;
+}
+
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.4),
+    0 0 30px rgba(190,90,255,.3);
+}
+
+.btn.primary{
+  color:#12051b;
+  border:0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff,
+      #daa3ff,
+      #9134df
+    );
+}
+
+/* =========================
+   TICKER
+========================= */
+
+.ticker{
+  overflow:hidden;
+  white-space:nowrap;
+
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+
+  background:rgba(10,5,16,.8);
+}
+
+.tickerText{
+  display:inline-block;
+
+  padding:13px 0;
+
+  font-family:Orbitron;
+  font-size:12px;
+  letter-spacing:2px;
+
+  animation:marquee 18s linear infinite;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+section{
+  padding:75px 0 15px;
+  scroll-margin-top:20px;
+}
+
+.sectionTitle{
+  margin-bottom:25px;
+}
+
+.sectionTitle h2{
+  font-family:Orbitron;
+  font-size:clamp(24px,5vw,38px);
+}
+
+.sectionTitle p{
+  margin-top:7px;
+  color:#a99db2;
+  font-size:13px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.card{
+  position:relative;
+  overflow:hidden;
+
+  padding:23px;
+
+  border-radius:20px;
+  border:1px solid var(--line);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25,11,40,.85),
+      rgba(9,6,15,.9)
+    );
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.4);
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  right:-70px;
+  bottom:-80px;
+
+  background:#a83cff;
+  opacity:.15;
+  filter:blur(50px);
+}
+
+.card h3{
+  font-family:Orbitron;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.card p,
+.card li{
+  color:#c9bfce;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.card ul{
+  margin:12px 0 18px;
+  padding-left:18px;
+}
+
+.price{
+  font-family:Orbitron;
+  font-weight:800;
+  font-size:18px;
+  margin:18px 0;
+}
+
+.order{
+  width:100%;
+}
+
+/* =========================
+   QUEUE
+========================= */
+
+.queueBox{
+  display:flex;
+  gap:10px;
+}
+
+.input{
+  width:100%;
+
+  padding:14px;
+
+  border-radius:13px;
+  border:1px solid var(--line);
+
+  outline:none;
+
+  color:white;
+  background:#09050f;
+}
+
+.status{
+  margin-top:15px;
+  padding:15px;
+
+  border-radius:14px;
+
+  color:#ccc0d5;
+  background:rgba(255,255,255,.04);
+
+  border:1px solid rgba(255,255,255,.07);
+}
+
+/* =========================
+   CONTACT
+========================= */
+
+.contactGrid{
+  display:grid;
+  grid-template-columns:1fr .8fr;
+  gap:18px;
+}
+
+.contactButtons{
+  display:grid;
+  gap:12px;
+}
+
+.contactButton{
+  width:100%;
+  justify-content:space-between;
+}
+
+.qr{
+  text-align:center;
+}
+
+.qr img{
+  width:min(100%,330px);
+
+  margin-top:15px;
+
+  padding:10px;
+
+  background:white;
+  border-radius:18px;
+
+  box-shadow:
+    0 0 35px rgba(255,255,255,.12);
+}
+
+footer{
+  padding:40px 0 100px;
+  text-align:center;
+  color:#756b7d;
+  font-size:11px;
+}
+
+/* =========================
+   BOTTOM MENU
+========================= */
+
+.bottomNav{
+  position:fixed;
+  z-index:500;
+
+  bottom:0;
+  left:0;
+  right:0;
+
+  height:var(--nav);
+
+  background:rgba(7,3,12,.9);
+  backdrop-filter:blur(18px);
+
+  border-top:1px solid var(--line);
+
+  box-shadow:0 -15px 50px rgba(0,0,0,.45);
+}
+
+.navInner{
+  width:min(1000px,96%);
+  height:100%;
+  margin:auto;
+
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+  padding:7px;
+}
+
+.navBtn{
+  border:1px solid transparent;
+  border-radius:13px;
+
+  background:transparent;
+  color:#988da2;
+
+  font-size:10px;
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.navBtn span{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px;
+}
+
+.navBtn.active,
+.navBtn:hover{
+  color:white;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(190,100,255,.18),
+      rgba(100,30,170,.25)
+    );
+
+  border-color:rgba(200,120,255,.2);
+
+  text-shadow:0 0 15px #c05cff;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes blink{
+  0%,100%{opacity:.2}
+  50%{opacity:1}
+}
+
+@keyframes flicker{
+  0%,90%,100%{opacity:1}
+  92%{opacity:.65}
+  94%{opacity:1}
+}
+
+@keyframes pulse{
+  50%{
+    box-shadow:
+      0 0 45px rgba(190,80,255,.8);
+  }
+}
+
+@keyframes marquee{
+  to{
+    transform:translateX(-50%);
+  }
+}
+
+@keyframes intro{
+  0%{
+    opacity:0;
+    transform:scale(1.05);
+  }
+
+  15%,80%{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  100%{
+    opacity:0;
+  }
+}
+
+@keyframes slash{
+  from{
+    transform:translateX(-100%) rotate(-12deg);
+  }
+
+  to{
+    transform:translateX(100%) rotate(-12deg);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:800px){
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .contactGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:550px){
+
+  :root{
+    --nav:72px;
+  }
+
+  .cards{
+    grid-template-columns:1fr;
+  }
+
+  .heroCard{
+    min-height:570px;
+    border-radius:20px;
+  }
+
+  .heroContent{
+    padding:25px;
+  }
+
+  .profileRing{
+    width:165px;
+    height:165px;
+  }
+
+  .profile{
+    width:145px;
+    height:145px;
+  }
+
+  .queueBox{
+    flex-direction:column;
+  }
+
+  .navBtn{
+    font-size:9px;
+  }
+
+  .navBtn span{
+    font-size:17px;
+  }
+}
+</style>
+</head>
+
+<body class="lock">
+
+<!-- =========================
+     LOADING
+========================= -->
+
+<div id="loader">
+
+  <div class="loaderBox">
+
+    <div class="hud"></div>
+
+    <div class="profileRing">
+
+      <img
+        src="assets/panzyystur-banner.png"
+        class="profile"
+        alt="PANZYYSTUR">
+
+      <span class="lightning l1">ϟ</span>
+      <span class="lightning l2">ϟ</span>
+      <span class="lightning l3">✦</span>
+
+    </div>
+
+    <div class="logoText">
+      PANZYY<span>STUR</span>
+    </div>
+
+    <div class="loadingText">
+      INITIALIZING PREMIUM MARKET
+    </div>
+
+    <div class="progressBox">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="percent" id="percent">
+      0%
+    </div>
+
+    <button class="enter" id="enter">
+      [ KLICK UNTUK MASUK ]
+    </button>
+
+  </div>
+</div>
+
+
+<!-- =========================
+     CINEMATIC INTRO
+========================= -->
+
+<div id="intro">
+
+  <div class="slash"></div>
+
+  <div class="introTitle">
+
+    <small>Welcome To</small>
+
+    PANZYYSTUR
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main>
+
+<!-- HOME -->
+
+<section id="home" class="hero">
+
+<div class="container">
+
+<div class="heroCard">
+
+<div class="heroContent">
+
+<div class="eyebrow">
+MARKET JASA • PREMIUM • FUTURISTIC
+</div>
+
+<h1>
+Welcome To
+<span class="gradient">
+PANZYYSTUR
+</span>
+</h1>
+
+<p>
+Selamat Datang Di Market PANZYYSTUR.
+Nikmati berbagai layanan joki kontak,
+suntik sosmed, jasa pembuatan web dan
+produk digital lainnya.
+</p>
+
+<div class="actions">
+
+<a href="#joki" class="btn primary">
+JOKI
+</a>
+
+<a href="#contact" class="btn">
+CONTACT
+</a>
+
+<a href="#info" class="btn">
+INFORMASI
+</a>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- RUNNING TEXT -->
+
+<div class="ticker">
+
+<div class="tickerText">
+
+MARKET JASA KONTAK ✦
+SUNTIK SOSMED ✦
+LAYANAN WEB ✦
+PANZYYSTUR ✦
+MARKET JASA KONTAK ✦
+SUNTIK SOSMED ✦
+LAYANAN WEB ✦
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     JOKI
+========================= -->
+
+<section id="joki">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Jasa Joki Kontak
+</h2>
+
+<p>
+Paket Joki Kontak By PANZYYSTUR
+</p>
+
+</div>
+
+<div class="cards" id="jokiList"></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     SOSMED
+========================= -->
+
+<section id="sosmed">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Suntik Sosmed
+</h2>
+
+<p>
+SUNTIK ALL SOSMED MURAH & CEPAT
+</p>
+
+</div>
+
+<div class="cards" id="sosmedList"></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     ANTRIAN
+========================= -->
+
+<section id="antrian">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Cek Antrian
+</h2>
+
+<p>
+Cek status pesanan kamu.
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="queueBox">
+
+<input
+class="input"
+id="orderID"
+placeholder="Masukkan ID pesanan">
+
+<button
+class="btn primary"
+onclick="checkQueue()">
+
+CEK
+
+</button>
+
+</div>
+
+<div class="status" id="status">
+Status pesanan akan tampil di sini.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     PROMO
+========================= -->
+
+<section id="promo">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Produk Promo 15%
+</h2>
+
+<p>
+Pilihan untuk kamu.
+</p>
+
+</div>
+
+<div class="cards" id="promoList"></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     INFO
+========================= -->
+
+<section id="info">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Cara Order
+</h2>
+
+<p>
+Simple & Gampang.
+</p>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>
+01 — Pilih Produk
+</h3>
+
+<p>
+Pilih layanan yang tersedia sesuai
+kebutuhan kamu.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+02 — Isi Data
+</h3>
+
+<p>
+Nama, nomor telepon dan catatan
+optional.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+03 — Konfirmasi
+</h3>
+
+<p>
+Pesanan akan dikonfirmasi admin
+setelah data dan pembayaran sesuai.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="card" style="margin-top:16px">
+
+<h3>
+Tentang PANZYYSTUR
+</h3>
+
+<p>
+PANZYYSTUR menyediakan layanan jasa
+joki kontak, suntik sosmed dan jasa
+pembuatan web.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================= -->
+
+<section id="contact">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<h2>
+Contact Admin
+</h2>
+
+<p>
+Hubungi admin PANZYYSTUR.
+</p>
+
+</div>
+
+<div class="contactGrid">
+
+
+<div class="card">
+
+<div class="contactButtons">
+
+
+<a
+href="https://wa.me/6289502400453"
+target="_blank"
+class="btn contactButton">
+
+<span>WhatsApp Utama</span>
+
+<b>
+089502400453 ↗
+</b>
+
+</a>
+
+
+<a
+href="https://wa.me/6285647509622"
+target="_blank"
+class="btn contactButton">
+
+<span>WhatsApp Cadangan</span>
+
+<b>
+085647509622 ↗
+</b>
+
+</a>
+
+
+<a
+href="https://whatsapp.com/channel/0029VbE0qda0rGiVFnbHLI17"
+target="_blank"
+class="btn contactButton">
+
+<span>Saluran PANZYYSTUR</span>
+
+<b>
+Masuk Channel ↗
+</b>
+
+</a>
+
+
+<a
+href="https://www.tiktok.com/@panzy.stur1"
+target="_blank"
+class="btn contactButton">
+
+<span>TikTok PANZYYSTUR</span>
+
+<b>
+Klick ↗
+</b>
+
+</a>
+
+
+<a
+href="https://t.me/Panzyysturr03"
+target="_blank"
+class="btn contactButton">
+
+<span>Telegram PANZYYSTUR</span>
+
+<b>
+Klick ↗
+</b>
+
+</a>
+
+
+</div>
+
+
+<div
+class="card"
+style="margin-top:16px">
+
+<h3>
+Beberapa Manfaat
+</h3>
+
+<ul>
+
+<li>
+Menanyakan produk atau layanan
+</li>
+
+<li>
+Menanyakan harga dan metode pembayaran
+</li>
+
+<li>
+Menanyakan proses/order
+</li>
+
+<li>
+Bertanya sebelum membeli
+</li>
+
+<li>
+Meminta bantuan jika ada masalah
+pesanan
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+
+<!-- QR -->
+
+<div class="card qr">
+
+<h3>
+QRIS
+</h3>
+
+<p>
+Scan QR untuk melakukan pembayaran.
+</p>
+
+<img
+src="assets/qris-panzyystur.jpg"
+alt="QRIS PANZYYSTUR">
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+PANZYYSTUR © 2026
+
+</footer>
+
+</main>
+
+
+<!-- =========================
+     BOTTOM MENU
+========================= -->
+
+<nav class="bottomNav">
+
+<div class="navInner">
+
+<button
+class="navBtn active"
+onclick="go('home',this)">
+
+<span>⌂</span>
+HOME
+
+</button>
+
+<button
+class="navBtn"
+onclick="go('joki',this)">
+
+<span>◈</span>
+JOKI
+
+</button>
+
+<button
+class="navBtn"
+onclick="go('sosmed',this)">
+
+<span>✦</span>
+SOSMED
+
+</button>
+
+<button
+class="navBtn"
+onclick="go('contact',this)">
+
+<span>☎</span>
+CONTACT
+
+</button>
+
+<button
+class="navBtn"
+onclick="go('info',this)">
+
+<span>ⓘ</span>
+INFO
+
+</button>
+
+</div>
+
+</nav>
+
+
+<!-- YouTube music player tersembunyi -->
+<div
+style="
+position:fixed;
+width:1px;
+height:1px;
+left:-20px;
+top:-20px;
+opacity:0;
+pointer-events:none;
+">
+
+<div id="youtubePlayer"></div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   DATA PRODUK
+========================= */
+
+const WA="6289502400453";
+
+
+const joki=[
+
+[
+"JOKI 1 HARI",
+"LAYANAN JOKI KONTAK 1 HARI.",
+["PROSES CEPAT","HASIL PUAS"],
+"Rp 1.000"
+],
+
+[
+"JOKI 2 HARI",
+"LAYANAN JOKI KONTAK 2 HARI.",
+["PROSES CEPAT","HASIL PUAS"],
+"Rp 2.000"
+],
+
+[
+"JOKI 3 HARI",
+"LAYANAN JOKI KONTAK 3 HARI.",
+["PROSES CEPAT","HASIL PUAS"],
+"Rp 2.500"
+],
+
+[
+"JOKI 4 HARI",
+"LAYANAN JOKI KONTAK 4 HARI.",
+["PROSES CEPAT","HASIL PUAS"],
+"Rp 3.000"
+],
+
+[
+"JOKI 5 HARI",
+"LAYANAN JOKI KONTAK 5 HARI.",
+["PROSES CEPAT","HASIL PUAS"],
+"Rp 3.500"
+],
+
+[
+"JOKI PERMANEN",
+"LAYANAN JOKI PERMANEN.",
+[
+"PROSES CEPAT",
+"AKSES JOKI PERMANEN",
+"JOKI SELAMANYA",
+"HASIL PUAS DAN MURAH"
+],
+"Rp 6.000"
+]
+
+];
+
+
+const sosmed=[
+
+[
+"SUNTIK FOLLOWER TIKTOK",
+[
+"PENGIKUT PERMANEN",
+"PROSES CEPAT 1-5 MENIT",
+"HASIL PUAS"
+],
+"Rp 3.000 / 100 Pengikut"
+],
+
+[
+"SUNTIK VIEW VT TIKTOK",
+[
+"PROSES CEPAT 1-5 MENIT",
+"HASIL PUAS"
+],
+"Rp 1.500 / 1.000 View"
+],
+
+[
+"SUNTIK LIKE VT TIKTOK",
+[
+"PROSES CEPAT 1-5 MENIT",
+"HASIL PUAS"
+],
+"Rp 800 / 100 Like"
+],
+
+[
+"SUNTIK FOLLOWER INSTAGRAM",
+[
+"PENGIKUT PERMANEN",
+"PROSES CEPAT",
+"HASIL PUAS"
+],
+"Rp 2.000 / 100 Pengikut"
+],
+
+[
+"SUNTIK VIEW VT INSTAGRAM",
+[
+"SEDANG TERJADI KESALAHAN",
+"SEDANG DI PERBAIKI"
+],
+"SEDANG DIP
